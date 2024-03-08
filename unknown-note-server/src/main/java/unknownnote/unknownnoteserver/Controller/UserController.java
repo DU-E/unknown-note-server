@@ -1,42 +1,112 @@
 package unknownnote.unknownnoteserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import unknownnote.unknownnoteserver.entity.UserEntity;
+import org.springframework.web.bind.annotation.*;
+import unknownnote.unknownnoteserver.dto.UserInfoRequest;
+import unknownnote.unknownnoteserver.dto.UserInfoResponse;
+import unknownnote.unknownnoteserver.exception.UserNotFoundException;
+import unknownnote.unknownnoteserver.service.ErrorService;
+import unknownnote.unknownnoteserver.service.JwtService;
 import unknownnote.unknownnoteserver.service.UserService;
-
-import java.util.Map;
-
+import unknownnote.unknownnoteserver.service.UserSubscribeService;
 
 @RestController
-@RequestMapping("/signin")
+@RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    private JwtService jwtService;
 
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> signin(@RequestBody Map<String, String> body) {
-        String method = body.get("method");
-        String accessToken = body.get("token");
+    @Autowired
+    private ErrorService errorService;
 
-        // method와 accessToken 검증
-        if (method == null || accessToken == null) {
-            return new ResponseEntity<>(Map.of("code", 4000, "message", "요청 처리를 실패했습니다"), HttpStatus.BAD_REQUEST);
-        }
+    @Autowired
+    private UserSubscribeService userSubscribeService;
 
+    @GetMapping
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String jwtToken) {
         try {
-            UserEntity userEntity = userService.processLogin(method, accessToken);
-            String jwtToken = userService.generateJwtToken(userEntity.getUserId());
+            int jwt_user_id = jwtService.getUserIdFromJwt(jwtToken); // JWT 토큰 검증
 
-            return new ResponseEntity<>(Map.of("code", 1000, "data", jwtToken), HttpStatus.OK);
+            try{
+                UserInfoResponse response = userService.getUserInfo(jwt_user_id);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(errorService.setError(4000, "요청 처리를 실패했습니다"));
+            }
+
         } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("code", 4000, "message", "요청 처리를 실패했습니다"), HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.ok(errorService.setError(2000,"유효하지 않은 접근입니다"));
         }
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> patchUserInfo(@RequestHeader("Authorization") String jwtToken, @RequestBody UserInfoRequest userInfoRequest){
+        try {
+            int jwt_user_id = jwtService.getUserIdFromJwt(jwtToken); // JWT 토큰 검증
+
+            try{
+                userService.patchUserInfo(jwt_user_id,userInfoRequest);
+                return ResponseEntity.ok(errorService.setError(1000, ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(errorService.setError(4000, "요청 처리를 실패했습니다"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(errorService.setError(2000,"유효하지 않은 접근입니다"));
+        }
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<?> subscribe(@RequestHeader("Authorization") String jwtToken, @RequestParam int target_user_id) {
+        try{
+            int jwt_user_id = jwtService.getUserIdFromJwt(jwtToken); // JWT 토큰 검증
+
+            try{
+                userSubscribeService.subscribe(target_user_id, jwt_user_id);
+                return ResponseEntity.ok(errorService.setError(1000, ""));
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.ok(errorService.setError(4000, "요청 처리를 실패했습니다"));
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok(errorService.setError(2000,"유효하지 않은 접근입니다"));
+        }
+    }
+
+    @DeleteMapping("/subscribe")
+    public ResponseEntity<?> unsubscribe(@RequestHeader("Authorization") String jwtToken, @RequestParam int target_user_id) {
+        try{
+            int jwt_user_id = jwtService.getUserIdFromJwt(jwtToken); // JWT 토큰 검증
+
+            try{
+                userSubscribeService.unsubscribe(target_user_id, jwt_user_id);
+                return ResponseEntity.ok(errorService.setError(1000, ""));
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.ok(errorService.setError(4000, "요청 처리를 실패했습니다"));
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok(errorService.setError(2000,"유효하지 않은 접근입니다"));
+        }
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.ok(errorService.setError(1001, "해당 ID의 유저가 없습니다"));
     }
 }
