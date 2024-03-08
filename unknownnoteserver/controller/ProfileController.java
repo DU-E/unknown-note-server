@@ -8,7 +8,7 @@ import unknownnote.unknownnoteserver.dto.UserInfoResponse;
 import unknownnote.unknownnoteserver.service.*;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/api/profile")
 public class ProfileController {
 
     @Autowired
@@ -24,12 +24,10 @@ public class ProfileController {
     public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String jwtToken, @RequestParam("user_id") int param_user_id) {
         try {
             int jwt_user_id = jwtService.getUserIdFromJwt(jwtToken); // JWT 토큰 검증
-            boolean meWatchingMyProfile;
 
             if(jwt_user_id == param_user_id) { // 내 프로필
                 try{
-                    meWatchingMyProfile = true;
-                    MyProfileResponse response = myProfileService.getMyProfileInfo(jwt_user_id,jwt_user_id,meWatchingMyProfile);
+                    MyProfileResponse response = myProfileService.getMyProfileInfo(jwt_user_id);
                     return ResponseEntity.ok(response);
                 } catch (Exception e ){
                     e.printStackTrace();
@@ -38,8 +36,7 @@ public class ProfileController {
             }
             else {  // 다른 사람 프로필
                 try{
-                    meWatchingMyProfile = false;
-                    MyProfileResponse response = myProfileService.getMyProfileInfo(jwt_user_id, param_user_id, meWatchingMyProfile);
+                    MyProfileResponse response = myProfileService.getMyProfileInfo(param_user_id);
                     return ResponseEntity.ok(response);
                 } catch (Exception e ){
                     e.printStackTrace();

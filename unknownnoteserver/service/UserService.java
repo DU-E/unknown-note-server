@@ -2,7 +2,6 @@ package unknownnote.unknownnoteserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import unknownnote.unknownnoteserver.dto.UserInfo;
 import unknownnote.unknownnoteserver.dto.UserInfoRequest;
 import unknownnote.unknownnoteserver.dto.UserInfoResponse;
 import unknownnote.unknownnoteserver.entity.User;
@@ -19,12 +18,10 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 ID의 유저가 없습니다"));
 
-        UserInfo userInfo = new UserInfo(user.getUserid(), user.getNickname(), user.getIntroduction());
-
         UserInfoResponse response = new UserInfoResponse();
         response.setCode(1000); // Success code
         response.setMessage("");
-        response.setData(userInfo);
+        response.setData(user);
 
         return response;
     }

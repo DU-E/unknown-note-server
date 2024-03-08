@@ -12,7 +12,7 @@ import unknownnote.unknownnoteserver.service.UserService;
 import unknownnote.unknownnoteserver.service.UserSubscribeService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired

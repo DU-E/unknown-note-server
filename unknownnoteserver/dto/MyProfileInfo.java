@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MyProfileInfo {
-    private UserInfo user;
+    private User user;
     private int essayCnt;
     private int journalCnt;
 
@@ -19,6 +19,5 @@ public class MyProfileInfo {
     private List<MonthlyActivity> monthly_act;
     private Monthly_emo monthly_emo;
     private String flower;
-    private int is_subscribed;
 
 }

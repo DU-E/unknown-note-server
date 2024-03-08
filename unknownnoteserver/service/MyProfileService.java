@@ -2,7 +2,10 @@ package unknownnote.unknownnoteserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import unknownnote.unknownnoteserver.dto.*;
+import unknownnote.unknownnoteserver.dto.MonthlyActivity;
+import unknownnote.unknownnoteserver.dto.MyProfileInfo;
+import unknownnote.unknownnoteserver.dto.MyProfileResponse;
+import unknownnote.unknownnoteserver.dto.RecentGraph;
 import unknownnote.unknownnoteserver.entity.Diary;
 import unknownnote.unknownnoteserver.entity.Essay;
 import unknownnote.unknownnoteserver.entity.Monthly_emo;
@@ -10,7 +13,6 @@ import unknownnote.unknownnoteserver.entity.User;
 import unknownnote.unknownnoteserver.repository.DiaryRepository;
 import unknownnote.unknownnoteserver.repository.EssayRepository;
 import unknownnote.unknownnoteserver.repository.UserRepository;
-import unknownnote.unknownnoteserver.repository.UserSubscribeRepository;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -35,10 +37,8 @@ public class MyProfileService {
     private DiaryRepository diaryRepository;
     @Autowired
     private DiaryService diaryService;
-    @Autowired
-    private UserSubscribeRepository userSubscribeRepository;
 
-    public MyProfileResponse getMyProfileInfo(int userId, int otherUserId, boolean meWatchingMyProfile) {
+    public MyProfileResponse getMyProfileInfo(int userId) {
         //유저 할당
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         //일기, 수필 개수 할당
@@ -71,27 +71,15 @@ public class MyProfileService {
         List<MonthlyActivity> activities = getMonthlyActivities(userId);
         List<RecentGraph> recentGraphs = getRecentGraphData(userId);
 
-        UserInfo userInfo = new UserInfo(user.getUserid(), user.getNickname(), user.getIntroduction());
-
         //MyprofileInfo 작성
         MyProfileInfo myProfileInfo = new MyProfileInfo();
-        myProfileInfo.setUser(userInfo);
+        myProfileInfo.setUser(user);
         myProfileInfo.setEssayCnt(essayCount);
         myProfileInfo.setJournalCnt(diaryCount);
         myProfileInfo.setMonthly_emo(monthly_emo);
         myProfileInfo.setFlower(flower);
         myProfileInfo.setMonthly_act(activities);
         myProfileInfo.setRecent_graph(recentGraphs);
-        if(meWatchingMyProfile == true){ //내가 내 프로필 보는 상황
-            myProfileInfo.setIs_subscribed(0);
-        }
-        else{ //내가 남 프로필 보는 상황
-            boolean exits = userSubscribeRepository.findByUserIdAndFollowingId(otherUserId, userId).isPresent();
-            if(exits)
-                myProfileInfo.setIs_subscribed(1);
-            else
-                myProfileInfo.setIs_subscribed(0);
-        }
 
 
         //MyProfileResponse 작성
@@ -110,7 +98,7 @@ public class MyProfileService {
         LocalDateTime endDateTime = endDate.atStartOfDay();
 
         // Diary 활동 조회
-        List<Diary> diaries = diaryRepository.findByUser_UseridAndDiaryTimeBetween(
+        List<Diary> diaries = diaryRepository.findByUserIdAndDiaryTimeBetween(
                 userId, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime));
 
         // 날짜별로 집계 및 value 계산
@@ -176,7 +164,7 @@ public class MyProfileService {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atStartOfDay();
 
-        List<Diary> diaries = diaryRepository.findByUser_UseridAndDiaryTimeBetween(
+        List<Diary> diaries = diaryRepository.findByUserIdAndDiaryTimeBetween(
                 userId, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime));
 
         List<Essay> essays = essayRepository.findByUserIdAndEssayTimeBetween(

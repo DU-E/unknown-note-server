@@ -9,5 +9,5 @@ import unknownnote.unknownnoteserver.entity.User;
 public class UserInfoResponse {
     private int code;
     private String message;
-    private UserInfo data;
+    private User data;
 }

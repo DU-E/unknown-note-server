@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/cal")
+@RequestMapping("/api/cal")
 public class CalenderController {
 
     @Autowired
