@@ -13,12 +13,13 @@ import unknownnote.unknownnoteserver.dto.EssayDTO;
 import unknownnote.unknownnoteserver.entity.Essay;
 import unknownnote.unknownnoteserver.service.EssayService;
 import unknownnote.unknownnoteserver.service.JwtService;
+import unknownnote.unknownnoteserver.entity.User;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/essay")
@@ -266,6 +267,40 @@ public class EssayController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("{\"code\": 1002, \"message\": \"Failed to remove like\"}");
+        }
+    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<Object> getUserEssays(@PathVariable int userId, @RequestParam Optional<Integer> page) {
+        List<Essay> essays = essayService.findUserEssays(page, userId);
+        if (!essays.isEmpty()) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 1000);
+
+            List<Map<String, Object>> essaysInfo = new ArrayList<>();
+            for (Essay essay : essays) {
+                Map<String, Object> essayInfo = new HashMap<>();
+                essayInfo.put("essayid", essay.getEssayId());
+                essayInfo.put("etitle", essay.getETitle());
+                essayInfo.put("econtent", essay.getEContent());
+                essayInfo.put("etime", essay.getEssayTime());
+                essayInfo.put("ecategory", essay.getECategory());
+
+                User user = essay.getUser();
+                Map<String, Object> userInfo = new HashMap<>();
+                userInfo.put("user_id", user.getUserId());
+                userInfo.put("nickname", user.getNickname());
+                userInfo.put("introduction", user.getIntroduction());
+
+                essayInfo.put("user", userInfo);
+                essaysInfo.add(essayInfo);
+            }
+
+            response.put("data", essaysInfo);
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"code\": 2000, \"message\": \"No essays found for the user\"}");
         }
     }
 
