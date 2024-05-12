@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class EssayService {
@@ -57,7 +57,7 @@ public class EssayService {
 
             return null;
         } catch (Exception e) {
-           // e.printStackTrace(); //디버깅용 결과 모두 보여주기 위해
+            // e.printStackTrace(); //디버깅용 결과 모두 보여주기 위해
             throw new RuntimeException("Unexpected Error during saveNewEssay()", e);
         }
     }
@@ -84,6 +84,7 @@ public class EssayService {
             return null;
         }
     }
+
     public Essay addLike(int essayId, int userId) {
         Optional<Essay> essayOptional = essayRepository.findById(essayId);
         if (essayOptional.isPresent()) {
@@ -151,49 +152,12 @@ public class EssayService {
         }
         return essays;
     }
-
-//    public Essay getRecommendedEssay(int userId) {
-//        try {
-//            // 사용자가 이미 본 에세이의 ID 목록 가져오기
-//            List<Integer> viewedEssayIds = userViewedEssaysRepository.findViewedEssayIds(userId);
-//
-//            Essay recommendedEssay = null;
-//            if (!viewedEssayIds.isEmpty()) {
-//                List<Essay> unviewedEssays = essayRepository.findUnviewedEssays(viewedEssayIds);
-//                if (!unviewedEssays.isEmpty()) {
-//                    recommendedEssay = unviewedEssays.get(0); // 첫 번째 에세이를 선택
-//                }
-//            } else {
-//                List<Essay> essays = essayRepository.findAnyEssay();
-//                if (!essays.isEmpty()) {
-//                    recommendedEssay = essays.get(0); // 첫 번째 에세이를 선택
-//                }
-//            }
-//
-//            // 추천된 에세이를 사용자가 본 에세이 목록에 추가
-//            if (recommendedEssay != null) {
-//                viewedEssayIds.add(recommendedEssay.getEssayId());
-//
-//                // 사용자가 이미 본 에세이를 UserViewedEssays 테이블에 기록
-//                UserViewedEssaysEntity userViewedEssaysEntity = new UserViewedEssaysEntity();
-//                UserViewedEssaysId userViewedEssaysId = new UserViewedEssaysId(userId, recommendedEssay.getEssayId());
-//                userViewedEssaysEntity.setId(userViewedEssaysId);
-//
-//                // 생성된 UserViewedEssaysEntity를 저장한다.
-//                userViewedEssaysRepository.save(userViewedEssaysEntity);
-//
-//                return recommendedEssay;
-//            } else {
-//                System.err.println("No unviewed essays found");
-//                return null;
-//            }
-//        } catch (Exception e) {
-//            // 예외 처리
-//            System.err.println("An error occurred while getting recommended essay: " + e.getMessage());
-//            throw new RuntimeException("error occurred while getting recommended essay", e);
-//        }
-//    }
     public List<Essay> findAll() {
         return essayRepository.findAll();
+    }
+
+    public List<Essay> findUserEssays(@RequestParam Optional<Integer> page, int userId) {
+        Pageable pageable = PageRequest.of(page.orElse(0), 20);
+        return essayRepository.findByUser_UserId(userId, pageable).getContent();
     }
 }
