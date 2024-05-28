@@ -181,8 +181,8 @@ public class DiaryService {
                 return recommendedDiary;
 
             } else {
-                System.err.println("Valueable recommendedDiary for emotion: " + emotion + "is NULL");
-                return null;
+
+                return null; // recommendedDiary 가 null 즉, 가져올 공개된 일기가 없다.
             }
         } catch (Exception e) {
             // 예외 처리

@@ -19,9 +19,6 @@ public interface EssayRepository extends JpaRepository<Essay, Integer> {
     List<Essay> findByUser_UserIdAndEssayTimeBetween(int userId, Timestamp start, Timestamp end);
     Page<Essay> findByECategoryOrderByEssayTimeDesc(String category, Pageable pageable);
     List<Essay> findByUser(User user);
-    @Query("SELECT e FROM Essay e WHERE e.essayId NOT IN :viewedEssayIds")
-    List<Essay> findUnviewedEssays(@Param("viewedEssayIds") List<Integer> viewedEssayIds);
 
-    @Query("SELECT e FROM Essay e ORDER BY e.essayTime DESC")
-    List<Essay> findAnyEssay();
+    Page<Essay> findByUser_UserId(int userId, Pageable pageable);
 }

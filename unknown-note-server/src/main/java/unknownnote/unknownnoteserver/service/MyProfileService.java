@@ -49,23 +49,23 @@ public class MyProfileService {
         String flowerTag = diaryService.findMostFrequentTag(userId);
         String flower;
         if(flowerTag.equals("happy"))
-            flower = "복수초";
+            flower = "happy";
         else if(flowerTag.equals("love"))
-            flower = "장미";
+            flower = "love";
         else if(flowerTag.equals("expect"))
-            flower = "프리지아";
+            flower = "expect";
         else if(flowerTag.equals("thanks"))
-            flower = "민들레";
+            flower = "thanks";
         else if(flowerTag.equals("sad"))
-            flower = "메리골드";
+            flower = "sad";
         else if(flowerTag.equals("anger"))
-            flower = "클로버";
+            flower = "anger";
         else if(flowerTag.equals("fear"))
-            flower = "덧나무";
+            flower = "fear";
         else if(flowerTag.equals("regret"))
-            flower = "라일락";
+            flower = "regret";
         else
-            flower = "복수초";
+            flower = "happy";
 
         List<MonthlyActivity> activities = getMonthlyActivities(userId);
         List<RecentGraph> recentGraphs = getRecentGraphData(userId);

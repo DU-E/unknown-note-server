@@ -126,7 +126,7 @@ public class DiaryController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getRecommendedDiary(
+    public ResponseEntity<Object> getDiary(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String jwtToken,
             @RequestParam(name = "emotion", required = false) String emotion){
 
@@ -169,8 +169,11 @@ public class DiaryController {
 
                 return ResponseEntity.ok(response); //일기 로딩 성공
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("{\"code\": 2000, \"message\": \" Value recommendation is NULL\"}"); //일기 추천 함수 에러
+                Map<String, Object> response = new HashMap<>();
+                response.put("code", 1005);
+                response.put("message", "No Openable Diary left in the table");
+
+                return ResponseEntity.ok(response); // 남은 공개된 일기가 없음
             }
 
         }catch(IllegalStateException e){

@@ -21,26 +21,12 @@ public class JwtService {
     @Value("${spring.jwt.secret}")
     private String SECRET_KEY; //비밀 키
 
-    public Integer getUserIdFromJwt(String jwtToken) {
-        jwtToken = jwtToken.replace(" ", "");
-        jwtToken = jwtToken.replace("Bearer ", ""); // "Bearer " 접두사 제거
+    public int getUserIdFromJwt(String jwtToken){
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
-        // 토큰 파싱 및 검증
-//        Jws<Claims> jwsClaims = Jwts.parserBuilder()
-//                .setSigningKey(key)
-//                .build()
-//                .parseClaimsJws(jwtToken);
-        // jjwt 0.12.3 버전 수정
-        Jws<Claims> jwsClaims = Jwts.parser()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwtToken);
-
-        // 검증된 클레임 반환
-        Claims claims = jwsClaims.getBody();
-        Integer user_id = claims.get("user_id", Integer.class); // Integer 타입으로 user_id 추출
-        return  user_id;
+        return Jwts.parser()
+                .verifyWith(key)
+                .build().parseSignedClaims(jwtToken)
+                .getPayload().get("user_id", Integer.class);
     }
-
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/essay")
@@ -56,16 +57,16 @@ public class EssayController {
                     if (!essays.isEmpty()) {
                         Map<String, Object> response = new HashMap<>();
                         response.put("code", 1000);
-                        response.put("message", "Successfully fetched all essays");
+                        response.put("message", "Fetched all essays");
 
                         List<Map<String, Object>> essaysInfo = new ArrayList<>();
                         for (Essay essay : essays) {
                             Map<String, Object> essayInfo = new HashMap<>();
                             essayInfo.put("essayid", essay.getEssayId());
-                            essayInfo.put("etitle", essay.getETitle());
-                            essayInfo.put("econtent", essay.getEContent());
+                            essayInfo.put("eTitle", essay.getETitle());
+                            essayInfo.put("eContent", essay.getEContent());
                             essayInfo.put("etime", essay.getEssayTime());
-                            essayInfo.put("ecategory", essay.getECategory());
+                            essayInfo.put("eCategory", essay.getECategory());
                             essayInfo.put("userid", essay.getUser().getUserId());
                             essayInfo.put("openable", essay.getOpenable());
                             essaysInfo.add(essayInfo);
@@ -75,24 +76,23 @@ public class EssayController {
 
                         return ResponseEntity.ok(response);
                     } else {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body("{\"code\": 2000, \"message\": \"No essays found\"}");
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                     }
             } else if (category.equals("favs")) {
                 List<Essay> likedEssays = essayService.findAllLikedEssays(userId);
                 if (!likedEssays.isEmpty()) {
                     Map<String, Object> response = new HashMap<>();
                     response.put("code", 1000);
-                    response.put("message", "Successfully fetched liked essays");
+                    response.put("message", "Fetched liked essays");
 
                     List<Map<String, Object>> essaysInfo = new ArrayList<>();
                     for (Essay essay : likedEssays) {
                         Map<String, Object> essayInfo = new HashMap<>();
                         essayInfo.put("essayid", essay.getEssayId());
-                        essayInfo.put("etitle", essay.getETitle());
-                        essayInfo.put("econtent", essay.getEContent());
+                        essayInfo.put("eTitle", essay.getETitle());
+                        essayInfo.put("eContent", essay.getEContent());
                         essayInfo.put("etime", essay.getEssayTime());
-                        essayInfo.put("ecategory", essay.getECategory());
+                        essayInfo.put("eCategory", essay.getECategory());
                         essayInfo.put("userid", essay.getUser().getUserId());
                         essayInfo.put("openable", essay.getOpenable());
                         essaysInfo.add(essayInfo);
@@ -102,8 +102,7 @@ public class EssayController {
 
                     return ResponseEntity.ok(response);
                 } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body("{\"code\": 2000, \"message\": \"No liked essays found\"}");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                 }
             } else if (category.equals("subs")) {
                 List<Essay> essays = essayService.findAllEssaysBySubscribedUsers(userId);
@@ -116,10 +115,10 @@ public class EssayController {
                     for (Essay essay : essays) {
                         Map<String, Object> essayInfo = new HashMap<>();
                         essayInfo.put("essayid", essay.getEssayId());
-                        essayInfo.put("etitle", essay.getETitle());
-                        essayInfo.put("econtent", essay.getEContent());
+                        essayInfo.put("eTitle", essay.getETitle());
+                        essayInfo.put("eContent", essay.getEContent());
                         essayInfo.put("etime", essay.getEssayTime());
-                        essayInfo.put("ecategory", essay.getECategory());
+                        essayInfo.put("eCategory", essay.getECategory());
                         essayInfo.put("userid", essay.getUser().getUserId());
                         essayInfo.put("openable", essay.getOpenable());
                         essaysInfo.add(essayInfo);
@@ -128,9 +127,8 @@ public class EssayController {
                     response.put("data", essaysInfo);
 
                     return ResponseEntity.ok(response);
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body("{\"code\": 2000, \"message\": \"No essays found by subscribed users\"}");
+                }else {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                 }
             } else  if (category.equals("novel") || category.equals("poem") || category.equals("whisper")) {
                 Page<Essay> essaysPage = essayService.findEssaysByCategory(category, page);
@@ -143,10 +141,10 @@ public class EssayController {
                     for (Essay essay : essaysPage.getContent()) {
                         Map<String, Object> essayInfo = new HashMap<>();
                         essayInfo.put("essayid", essay.getEssayId());
-                        essayInfo.put("etitle", essay.getETitle());
-                        essayInfo.put("econtent", essay.getEContent());
+                        essayInfo.put("eTitle", essay.getETitle());
+                        essayInfo.put("eContent", essay.getEContent());
                         essayInfo.put("etime", essay.getEssayTime());
-                        essayInfo.put("ecategory", essay.getECategory());
+                        essayInfo.put("eCategory", essay.getECategory());
                         essayInfo.put("userid", essay.getUser().getUserId());
                         essayInfo.put("openable", essay.getOpenable());
                         essaysInfo.add(essayInfo);
@@ -156,12 +154,11 @@ public class EssayController {
 
                     return ResponseEntity.ok(response);
                 } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body("{\"code\": 2000, \"message\": \"No essays found for the given category\"}");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
                 }
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("{\"code\": 1002, \"message\": \"Invalid type parameter\"}");
+                        .body("{\"code\": 1003, \"message\": \"Invalid type parameter\"}");
             }
         }
 
@@ -183,7 +180,7 @@ public class EssayController {
                 return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Essay saved\"}");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("{\"code\": 1002, \"message\": \"Essay saving failed\"}");
+                        .body("{\"code\": 1003, \"message\": \"Essay saving failed\"}");
             }
         } catch (IllegalStateException e) {
             logger.error("jwtToken is not in proper form / Outdated", e);
@@ -196,7 +193,7 @@ public class EssayController {
         } catch (RuntimeException e) {
             logger.error("Unexpected Error during saveNewEssay()", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \" Unexpected Error during saveNewEssay()\"}");
+                    .body("{\"code\": 1003, \"message\": \" Unexpected Error during saveNewEssay()\"}");
         } catch (Exception e) {
             logger.error("Unexpected error during saving essay", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -207,14 +204,14 @@ public class EssayController {
     @PatchMapping
     public ResponseEntity<Object> updateEssay(@RequestBody Map<String, Object> requestBody, @RequestHeader("Authorization") String jwtToken) {
         try {
-            Integer  essayId = (Integer) requestBody.get("essayId");
+            Integer  essayId = (Integer) requestBody.get("essayid");
                     if (essayId == null) {
                         return ResponseEntity.badRequest().body("{\"code\": 400, \"message\": \"essayId is required\"}");
                     }
             int openable = (int) requestBody.get("openable");
-            String eContent = (String) requestBody.get("econtent");
-            String eCategory = (String) requestBody.get("ecategory");
-            String eTitle = (String) requestBody.get("etitle");
+            String eContent = (String) requestBody.get("eContent");
+            String eCategory = (String) requestBody.get("eCategory");
+            String eTitle = (String) requestBody.get("eTitle");
 
             String token;
             if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
@@ -230,7 +227,7 @@ public class EssayController {
                 return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Essay updated successfully\"}");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("{\"code\": 1002, \"message\": \"Essay update failed\"}");
+                        .body("{\"code\": 1003, \"message\": \"Essay update failed\"}");
             }
         } catch (IllegalStateException e) {
             logger.error("jwtToken is not in proper form / Outdated", e);
@@ -254,7 +251,7 @@ public class EssayController {
             return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Successfully added like\"}");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("{\"code\": 1002, \"message\": \"Failed to add like\"}");
+                    .body("{\"code\": 1003, \"message\": \"Failed to add like\"}");
         }
     }
 
@@ -266,7 +263,7 @@ public class EssayController {
             return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Successfully removed like\"}");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("{\"code\": 1002, \"message\": \"Failed to remove like\"}");
+                    .body("{\"code\": 1003, \"message\": \"Failed to remove like\"}");
         }
     }
     @GetMapping("/{userId}")
