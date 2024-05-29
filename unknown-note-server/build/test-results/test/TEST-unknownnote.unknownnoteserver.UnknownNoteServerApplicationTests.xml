@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unknownnote.unknownnoteserver.UnknownNoteServerApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-05-29T06:15:09" hostname="syn-172-100-001-056.res.spectrum.com" time="3.877">
+  <properties/>
+  <testcase name="contextLoads()" classname="unknownnote.unknownnoteserver.UnknownNoteServerApplicationTests" time="3.877"/>
+  <system-out><![CDATA[15:14:37.157 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [unknownnote.unknownnoteserver.UnknownNoteServerApplicationTests]: UnknownNoteServerApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:14:37.511 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration unknownnote.unknownnoteserver.UnknownNoteServerApplication for test class unknownnote.unknownnoteserver.UnknownNoteServerApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.1)
+
+2024-05-29T15:14:38.941+09:00  INFO 1646 --- [    Test worker] u.u.UnknownNoteServerApplicationTests    : Starting UnknownNoteServerApplicationTests using Java 21.0.2 with PID 1646 (started by minpark in /Users/minpark/Desktop/unknown-note-server-main/unknown-note-server)
+2024-05-29T15:14:38.950+09:00  INFO 1646 --- [    Test worker] u.u.UnknownNoteServerApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2024-05-29T15:14:43.239+09:00  INFO 1646 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-05-29T15:14:43.713+09:00  INFO 1646 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 439 ms. Found 6 JPA repository interfaces.
+2024-05-29T15:14:45.751+09:00  INFO 1646 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-05-29T15:14:45.895+09:00  INFO 1646 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.1.Final
+2024-05-29T15:14:45.969+09:00  INFO 1646 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-05-29T15:14:48.114+09:00  INFO 1646 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-05-29T15:14:48.486+09:00  INFO 1646 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-05-29T15:14:49.104+09:00  INFO 1646 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@38d42ab7
+2024-05-29T15:14:49.111+09:00  INFO 1646 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-05-29T15:14:49.358+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@5c1c9881) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1c18ee69)
+2024-05-29T15:14:49.359+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2f99d8c) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@65d7eea4)
+2024-05-29T15:14:49.360+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@5d37aa0f) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6076c66)
+2024-05-29T15:14:49.362+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@485c84d7) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@1224e1b6)
+2024-05-29T15:14:49.364+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@72a3462f) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@4ffa7041)
+2024-05-29T15:14:49.366+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@632c3f55) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@56b05bd7)
+2024-05-29T15:14:49.367+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@3e4afd10) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@22aefae0)
+2024-05-29T15:14:49.368+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@20faaf77) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7440265c)
+2024-05-29T15:14:49.368+09:00 DEBUG 1646 --- [    Test worker] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1d8be7b9) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@48277712)
+2024-05-29T15:14:55.061+09:00  INFO 1646 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-05-29T15:14:55.077+09:00  INFO 1646 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-05-29T15:14:56.389+09:00  INFO 1646 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-05-29T15:15:04.712+09:00  WARN 1646 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-05-29T15:15:08.049+09:00  INFO 1646 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@45b63133, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2c1eba2e, org.springframework.security.web.context.SecurityContextHolderFilter@411c5fa2, org.springframework.security.web.header.HeaderWriterFilter@361d56a3, org.springframework.web.filter.CorsFilter@25c6f0fc, org.springframework.security.web.authentication.logout.LogoutFilter@7bcd497, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@d2eddc2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@13967a64, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@531455c1, org.springframework.security.web.session.SessionManagementFilter@2461b519, org.springframework.security.web.access.ExceptionTranslationFilter@3ce17e4, org.springframework.security.web.access.intercept.AuthorizationFilter@59960ae9]
+2024-05-29T15:15:09.151+09:00  INFO 1646 --- [    Test worker] u.u.UnknownNoteServerApplicationTests    : Started UnknownNoteServerApplicationTests in 31.18 seconds (process running for 35.7)
+]]></system-out>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/minpark/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.14.10/90ed94ac044ea8953b224304c762316e91fd6b31/byte-buddy-agent-1.14.10.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>
