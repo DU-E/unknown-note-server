@@ -1,19 +1,13 @@
 package unknownnote.unknownnoteserver.dto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @RequiredArgsConstructor
 public class EssayDTO {
-    @JsonProperty("eTitle")
-    private String eTitle;
-    @JsonProperty("eContent")
-    private String eContent;
-    @JsonProperty("openable")
-    private int openable;
-    @JsonProperty("eLikes")
-    private int eLikes;
-    @JsonProperty("eCategory")
-    private String eCategory;
+    private String eTitle; // 에세이 제목
+    private String eContent; // 에세이 내용
+    private int openable; // 에세이 공개 여부
+    private int eLikes;// 에세이 좋아요
+    private String eCategory; // 에세이 카테고리
 }

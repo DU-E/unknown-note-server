@@ -12,6 +12,7 @@ import unknownnote.unknownnoteserver.dto.DiaryDTO;
 import unknownnote.unknownnoteserver.entity.Diary;
 import unknownnote.unknownnoteserver.service.DiaryService;
 import unknownnote.unknownnoteserver.service.JwtService;
+import unknownnote.unknownnoteserver.service.ErrorService;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +27,9 @@ public class DiaryController {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private ErrorService errorService;
 
     @Autowired
     private JwtHandler jwtHandler;
@@ -56,29 +60,27 @@ public class DiaryController {
             Diary savedDiary=diaryService.SaveNewDiary(diaryDTO,userId);
             if(savedDiary!=null) {
                 // Diary가 성공적으로 저장되었을 때의 응답
-                return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Diary saved\"}");
+                Map<String, Object> response = new HashMap<>();
+                response.put("code", 1000);
+                response.put("message", "일기 저장 완료");
+                return ResponseEntity.ok().body(response); // 이제 JSON 객체로 반환 (추가부분)
             }else{
                 // 사용자를 찾을 수 없거나 저장에 실패한 경우의 응답
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("{\"code\": 1002, \"message\": \"Diary saving failed\"}");
+                return ResponseEntity.ok(errorService.setError(1002,"일기 저장 실패"));
             }
         }catch(IllegalStateException e){
             logger.error("jwtToken is not in proper form / Outdated", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \"JwtToken is not in proper form / Outdated\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 형식 오류"));
         }catch(JwtException e){
             logger.error("Error during Decoding Token", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \"Error during Decoding Token\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"토큰 해석중 오류 발생"));
         } catch(RuntimeException e){
             logger.error("Unexpected Error during SaveNewDiary()", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \" Unexpected Error during SaveNewDiary()\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"서비스 일기저장 함수에서 예상치 못한 에러발생"));
         }catch(Exception e){
             //e.printStackTrace(); // 운영시는 가릴것
             logger.error("Unexpected error during saving diary", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 4000, \"message\": \"Unexpected error during saving diary\"}");
+            return ResponseEntity.ok(errorService.setError(4000,"일기 저장 중 예상치 못한 에러 발생"));
         }
     }
 
@@ -103,25 +105,24 @@ public class DiaryController {
             Diary changedDiary = diaryService.updateDiary(diaryid,dcontent,openable,userid);
             if(changedDiary!=null){
                 //update 성공
-                return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Diary updated succesfully\"}");
+                Map<String, Object> response = new HashMap<>();
+                response.put("code", 1000);
+                response.put("message", "일기 패치 완료");
+                return ResponseEntity.ok().body(response); // 이제 JSON 객체로 반환 (추가부분)
             }else{
                 //update 실패
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("{\"code\": 1002, \"message\": \"Diary update failed\"}");
+                return ResponseEntity.ok(errorService.setError(1002,"일기 업데이트 실패"));
             }
         }catch(IllegalStateException e){
             logger.error("jwtToken is not in proper form / Outdated", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \"JwtToken is not in proper form / Outdated\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 형식 오류"));
         }catch(JwtException e){
             logger.error("Error during Decoding Token", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \"Error during Decoding Token\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 해석 오류"));
         } catch(Exception e){
             //e.printStackTrace(); // 운영시는 가릴것
             logger.error("Unexpected error during changediary()", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 4000, \"message\": \"Unexpected error during updating diary\"}");
+            return ResponseEntity.ok(errorService.setError(4000,"일기 패치 중 예상치 못한 에러발생"));
         }
     }
 
@@ -146,8 +147,7 @@ public class DiaryController {
             boolean containsString = emotionList.contains(emotion);
 
             if (emotion == null || !containsString) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("{\"code\": 2000, \"message\": \"emotion is null or out of range\"}");
+                return ResponseEntity.ok(errorService.setError(2000,"형식 밖의 감정으로 인한 오류"));
             }
 
             Diary recommendation = diaryService.getRecommendedDiary(userId,emotion);
@@ -171,23 +171,20 @@ public class DiaryController {
             } else {
                 Map<String, Object> response = new HashMap<>();
                 response.put("code", 1005);
-                response.put("message", "No Openable Diary left in the table");
+                response.put("message", "더 이상 추천할 해당 감정의 일기가 남아있지 않음");
 
                 return ResponseEntity.ok(response); // 남은 공개된 일기가 없음
             }
 
         }catch(IllegalStateException e){
             logger.error("jwtToken is not in proper form / Outdated", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \"jwtToken is not in proper form / Outdated\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 형식 오류"));
         }catch(JwtException e){
             logger.error("Error during Decoding Token", e); // 예외 발생 시 로깅
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 2000, \"message\": \"Error during Decoding Token\"}");
+            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 해석 오류"));
         }catch(Exception e){
             logger.error("Unexpected exception occured loading diary", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{\"code\": 4000, \"message\": \"Unexpected exception occured loading diary\"}"); // 예외발생
+            return ResponseEntity.ok(errorService.setError(4000,"일기 추천 중 예상치 못한 에러 발생"));
         }
 
     }
