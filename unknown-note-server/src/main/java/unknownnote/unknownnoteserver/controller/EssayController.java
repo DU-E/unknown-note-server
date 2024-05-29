@@ -183,25 +183,27 @@ public class EssayController {
 
             Essay savedEssay = essayService.saveNewEssay(essayDTO, userId);
             if (savedEssay != null) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("code", 1000);
-                response.put("message", "수필 저장 완료");
-                return ResponseEntity.ok().body(response);
+                return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Essay saved\"}");
             } else {
-                return ResponseEntity.ok(errorService.setError(1003,"일기 저장 실패"));
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("{\"code\": 1003, \"message\": \"Essay saving failed\"}");
             }
         } catch (IllegalStateException e) {
             logger.error("jwtToken is not in proper form / Outdated", e);
-            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 형식 오류"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 2000, \"message\": \"JwtToken is not in proper form / Outdated\"}");
         } catch (JwtException e) {
             logger.error("Error during Decoding Token", e);
-            return ResponseEntity.ok(errorService.setError(2000,"토큰 해석중 오류 발생"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 2000, \"message\": \"Error during Decoding Token\"}");
         } catch (RuntimeException e) {
             logger.error("Unexpected Error during saveNewEssay()", e);
-            return ResponseEntity.ok(errorService.setError(2000,"수필저장 함수에서  에러발생"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 1003, \"message\": \" Unexpected Error during saveNewEssay()\"}");
         } catch (Exception e) {
             logger.error("Unexpected error during saving essay", e);
-            return ResponseEntity.ok(errorService.setError(4000,"수필 저장 중 예상치 못한 에러 발생"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 4000, \"message\": \"Unexpected error during saving essay\"}");
         }
     }
 
@@ -228,23 +230,23 @@ public class EssayController {
 
             Essay updatedEssay = essayService.updateEssay(essayId, eContent, eCategory, eTitle, openable , userId);
             if (updatedEssay != null) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("code", 1000);
-                response.put("message", "수필 업데이트 완료");
-                return ResponseEntity.ok().body(response);
+                return ResponseEntity.ok().body("{\"code\": 1000, \"message\": \"Essay updated successfully\"}");
             } else {
-                return ResponseEntity.ok(errorService.setError(1003,"수필 업데이트 실패"));
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("{\"code\": 1003, \"message\": \"Essay update failed\"}");
             }
         } catch (IllegalStateException e) {
             logger.error("jwtToken is not in proper form / Outdated", e);
-            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 형식 오류"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 2000, \"message\": \"JwtToken is not in proper form / Outdated\"}");
         } catch (JwtException e) {
             logger.error("Error during Decoding Token", e);
-            return ResponseEntity.ok(errorService.setError(2000,"jwt 토큰 해석 오류"));
-
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 2000, \"message\": \"Error during Decoding Token\"}");
         } catch (Exception e) {
             logger.error("Unexpected error during updateEssay()", e);
-            return ResponseEntity.ok(errorService.setError(4000,"수필 업데이트 함수에서  에러발생"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"code\": 4000, \"message\": \"Unexpected error during updating essay\"}");
         }
     }
 
